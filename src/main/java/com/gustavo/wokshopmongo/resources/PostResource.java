@@ -1,5 +1,6 @@
 package com.gustavo.wokshopmongo.resources;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,16 @@ public class PostResource {
 		return ResponseEntity.ok().body(posts);	
 	}	
 	
+	@RequestMapping(value="/fullsearch", method=RequestMethod.GET)
+ 	public ResponseEntity<List<Post>> fullSearch(
+ 				@RequestParam(value="text",defaultValue="") String text,
+ 				@RequestParam(value="minDate",defaultValue="") String minDate,
+ 				@RequestParam(value="maxDate",defaultValue="") String maxDate){
+		text = URL.decodeParam(text);
+		Date min = URL.convertDate(minDate, new Date(0L)); //Data mínima do tipo Date do Java = new Date(0L) = 01/01/1970
+		Date max = URL.convertDate(maxDate, new Date()); //Instante atual do sistema = new Date()
+		List<Post> posts = service.fullSearch(text, min, max);
+		return ResponseEntity.ok().body(posts);	
+	}	
 	
 }
